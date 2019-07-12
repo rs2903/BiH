@@ -1,0 +1,162 @@
+library(tidyverse)
+library(pdftools)
+library(tesseract)
+
+wdr <- getwd()
+
+
+file.list  <- list.files(path=paste0(wdr,"/data/voting_records/"), 
+                         pattern=".pdf$",
+                         all.files=T,
+                         full.names = T) 
+
+
+
+# define tesseract engine -------------------------------------------------
+
+path_bos <- paste0(wdr, "/data/tesseract_lang/")
+#tesseract_download("bos", datapath=paste0(wdr, "/data/tesseract_lang/"))
+myengine<- tesseract(language = "bos",
+                     datapath =paste0(wdr, "/data/tesseract_lang/") )
+tesseract_info()
+
+
+# define and apply function to create images from pdfs --------------------
+
+pb <- dplyr::progress_estimated(length(file.list))
+
+fn_create_imgs <- function(pdf_file) {  
+  
+  pb$tick()$print()
+  pdftools::pdf_convert(pdf_file, 
+                        format="png",
+                        dpi=300) 
+  }
+
+
+df.images <- file.list %>%
+  map(., fn_create_imgs) 
+  
+
+# safe df with name of images ---------------------------------------------
+df.images %>% 
+  set_names() %>% 
+  map(., enframe, name=NULL) %>% 
+  map_dfr(., bind_rows, .id="id") %>% 
+  mutate(id2=str_extract(id, "[0-9]{6}")) %>% 
+  write_csv2(., "images.csv")
+
+
+
+# filter images -----------------------------------------------------------
+image_ids  <- readr::read_csv2(paste0(wdr,"/data/voting_records/images/images.csv")) %>% 
+  distinct(id2) %>% 
+  mutate(id2=as.character(id2))
+
+image_list  <- list.files(path=paste0(wdr,"/data/voting_records/images"), 
+                         pattern=".png$",
+                         all.files=T,
+                         full.names = T)   
+
+image_list_id<- image_ids$id2 %>% 
+  set_names() %>% 
+  map(., ~str_subset(image_list, .))
+
+length(image_list_id)
+
+
+fn_text <- function(x) {  
+  
+    pb$tick()$print()
+  
+    txt_string <- x %>% 
+    tesseract::ocr(., engine=myengine) %>% 
+    glue::glue_collapse() 
+    
+    session.no <- str_extract(txt_string, regex("\\d+(?=. Sjednic)", ignore_case=T)) #extract numerous digigs before pattern . Sjednic
+    house <- ifelse(str_detect(txt_string, regex("Predstavni", ignore_case = T)),
+                    "HoR",
+                    ifelse(str_detect(txt_string, regex("dom narod | Doma naroda", ignore_case = T)),
+                           "HoP", "missing"))
+    date <- str_extract(txt_string, "[0-9]{2}/[0-9]{2}/20[0-9]{2}|[0-9]{2}.[0-9]{2}.20[0-9]{2}|[0-9]{4}-[0-9]{2}-[0-9]{2}")  #extracts date, assumes specific 2 type of format
+
+    txt_vectors<- txt_string %>%
+      str_split(., "\n", simplify = F) 
+    
+    df.delegates <- txt_vectors %>%
+      map(., str_subset, regex("ZA$|PROTIV$|PRISUTAN$|SUZDRŽAN$|Nije glasao$", ignore_case=T)) %>% #only if at end of row
+      #map(., str_subset, regex("Delegat", ignore_case=T)) %>% 
+      unlist() %>% 
+      enframe(., name=NULL, value="txt")
+    
+    df.delegates<- df.delegates %>% 
+      mutate(vote=str_extract(txt, regex("ZA|Nije prisutan|PROTIV|UKUPNO|SUZDRŽAN|NIJE GLASAO", 
+                                         ignore_case=T)) %>% stringr::str_to_lower()) %>% 
+      mutate(entity=str_extract(txt, regex(" FBiH | RS |  Federacija | Republika Srpska")) %>% 
+               str_trim(., side=c("both"))) %>% 
+      mutate(entity=case_when(entity=="Federacija" ~ "FBiH",
+                              entity=="Republika Srpska" ~ "RS",
+                              TRUE ~ as.character(entity))) %>% 
+      mutate(house=house) %>% 
+      mutate(session.no=session.no) %>% 
+      mutate(date=date) %>% 
+      mutate(n.delegates=nrow(.)) %>% 
+      mutate(txt_string=txt_string)
+    
+    df.delegates 
+
+    # tibble(session.no=session.no,
+    #        house=house,
+    #        date=date,
+    #        n.delegates=n.delegates,
+    #        df.delegates=list(df.delegates),
+    #        txt_vector=list(txt_vectors))
+
+  }
+
+
+pb <- dplyr::progress_estimated(length(image_list_id[101:778]))
+
+x <- image_list_id[1] %>% 
+  map_dfr(., possibly(~fn_text(.), otherwise=NULL), .id="file.id") %>% 
+  mutate_at(vars(txt, txt_string), iconv, from="UTF-8", to="windows-1253")
+
+write_csv2(x, paste0(wdr, "/data/images.csv"), 
+           #col_names = T,
+           append = T)
+
+df.votes <- readr::read_csv2(paste0(wdr, "/data/images.csv"))
+
+n_distinct(x$file.id) #278
+n_distinct(df.votes$file.id) #376 #total
+
+length(unique(df.votes$file.id))
+
+
+# identification of missing ids -------------------------------------------
+output_ids<- df.votes %>% distinct(file.id)
+nrow(output_ids)
+
+input_ids <- image_list_id %>% 
+  names() %>% 
+  enframe(., name=NULL, value="file.id") %>% 
+  mutate(file.id=as.numeric(file.id))
+
+missing.ids <- anti_join(input_ids, output_ids)
+
+x <- missing.ids$file.id[5] %>% 
+  as.character(.) %>% 
+  map(., ~str_subset(image_list, .)) %>% 
+  map_dfr(., ~fn_text(.))
+
+missing.ids$file.id[1:2] %>% 
+  as.character(.) 
+
+x %>% 
+  map(., ocr, engine=myengine) %>% 
+  map(., glue::glue_collapse) %>% 
+  map(., str_split, "\n", simplify = F) %>% 
+  map(., str_subset, regex("ZA$|PROTIV$|PRISUTAN$|SUZDRŽAN$|Nije glasao$", ignore_case=T)) %>% #only if at end of row
+  #map(., str_subset, regex("Delegat", ignore_case=T)) %>% 
+  unlist() %>% 
+  enframe(., name=NULL, value="txt")

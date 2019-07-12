@@ -1,0 +1,29 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1557233965897.000,
+    "dirty" : false,
+    "encoding" : "",
+    "folds" : "",
+    "hash" : "0",
+    "id" : "66A58DE6",
+    "lastKnownWriteTime" : 1882023280,
+    "last_content_update" : -2147483648,
+    "path" : null,
+    "project_path" : null,
+    "properties" : {
+        "cacheKey" : "1EBAE675",
+        "caption" : "df_Bonn",
+        "contentUrl" : "grid_resource/gridviewer.html?env=&obj=df_Bonn&cache_key=1EBAE675",
+        "displayedObservations" : "138",
+        "environment" : "",
+        "object" : "df_Bonn",
+        "preview" : "0",
+        "totalObservations" : "138",
+        "variables" : "6"
+    },
+    "relative_order" : 2,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_dataframe"
+}

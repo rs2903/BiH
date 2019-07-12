@@ -1,0 +1,68 @@
+library(tidyverse)
+library(pdftools)
+library(tesseract)
+
+wdr <- getwd()
+
+
+file.list  <- list.files(path=paste0(wdr,"/data/voting_records/"), 
+                         pattern=".pdf$",
+                         all.files=T,
+                         full.names = T) 
+
+path_bos <- paste0(wdr, "/data/tesseract_lang/")
+tesseract_download("bos", datapath=paste0(wdr, "/data/tesseract_lang/"))
+myengine<- tesseract(language = "bos",
+                     datapath =paste0(wdr, "/data/tesseract_lang/") )
+tesseract_info()
+
+pb <- dplyr::progress_estimated(length(file.list))
+
+
+fn_create_imgs <- function(pdf_file) {  
+  
+  pb$tick()$print()
+  pdftools::pdf_convert(pdf_file, 
+                        format="png",
+                        dpi=300) 
+  }
+
+pdf.url <- "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf"
+
+pdf_convert(pdf.url, filenames = paste0(wdr, "/data/"))
+
+
+df.images <- file.list %>%
+  map(., fn_create_imgs) 
+  
+fn_text <- function(x) {  
+  
+    pb$tick()$print()
+  
+    vote <- pdftools::pdf_convert(x, dpi=300) %>% 
+    tesseract::ocr(., engine=myengine) %>% 
+    glue::glue_collapse() %>% 
+      str_split(., "\n", simplify = T) #%>%   #simplify already creates df
+      #map(., enframe, name=NULL)
+    
+    session.no <- str_extract(vote, "^\\d")
+    
+    vote
+
+  }
+
+y <- file.list[1:3] %>% 
+  map(., fn_text) 
+
+y %>% 
+  map(., str_extract, "^\\d*")  
+
+
+
+y1<- y %>% 
+  map(., str_split, "\n") %>% 
+  map_depth(., 2, enframe, name=NULL) 
+
+  
+y1[[1]][1]
+  

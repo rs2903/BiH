@@ -1,0 +1,512 @@
+Bonn.HR.tab<- Bonn.HR %>%
+ungroup() %>%
+select(-c(OHR.label, total)) %>%
+spread(key=area , value=freq, fill=0) %>%
+rowwise %>%
+select_if(is.numeric) %>%
+mutate(total=sum())
+formattable(Bonn.HR.tab)
+Bonn.HR.tab<- Bonn.HR %>%
+ungroup() %>%
+select(-c(OHR.label, total)) %>%
+spread(key=area , value=freq, fill=0) %>%
+rowwise %>%
+select_if(is.numeric) %>%
+mutate(total=sum(.))
+formattable(Bonn.HR.tab)
+Bonn.HR.tab<- Bonn.HR %>%
+ungroup() %>%
+select(-c(OHR.label, total)) %>%
+spread(key=area , value=freq, fill=0) %>%
+group_by(HR) %>%
+select_if(is.numeric) %>%
+mutate(total=sum())
+formattable(Bonn.HR.tab)
+Bonn.HR.tab<- Bonn.HR %>%
+ungroup() %>%
+select(-c(OHR.label, total)) %>%
+spread(key=area , value=freq, fill=0) %>%
+group_by(HR) %>%
+select_if(is.numeric) %>%
+mutate(total=sum(.))
+formattable(Bonn.HR.tab)
+Bonn.HR.tab<- Bonn.HR %>%
+ungroup() %>%
+select(-c(OHR.label, total)) %>%
+spread(key=area , value=freq, fill=0) %>%
+group_by(HR) %>%
+select_if(is.numeric) %>%
+mutate(total=sum(.))
+Bonn.HR.tab
+formattable(Bonn.HR.tab)
+Bonn.HR.tab<- Bonn.HR %>%
+ungroup() %>%
+select(-c(OHR.label, total)) %>%
+spread(key=area , value=freq, fill=0) %>%
+group_by(HR) %>%
+select_if(is.numeric) %>%
+mutate(total=sum())
+Bonn.HR.tab<- Bonn.HR %>%
+ungroup() %>%
+select(-c(OHR.label, total)) %>%
+spread(key=area , value=freq, fill=0) %>%
+mutate(total=sum(1:2))
+Bonn.HR.tab
+Bonn.HR.tab<- Bonn.HR %>%
+ungroup() %>%
+select(-c(OHR.label, total)) %>%
+spread(key=area , value=freq, fill=0) %>%
+mutate(total=sum(1:2))
+Bonn.HR.tab
+formattable(Bonn.HR.tab)
+Bonn.HR.tab<- Bonn.HR %>%
+ungroup() %>%
+select(-c(OHR.label, total)) %>%
+spread(key=area , value=freq, fill=0) %>%
+rowwise %>%
+mutate(total=sum(.))
+Bonn.HR.tab<- Bonn.HR %>%
+ungroup() %>%
+select(-c(OHR.label, total)) %>%
+spread(key=area , value=freq, fill=0) %>%
+rowwise %>%
+mutate(total=sum(is.numeric(.)))
+formattable(Bonn.HR.tab)
+Bonn.HR.tab<- Bonn.HR %>%
+ungroup() %>%
+select(-c(OHR.label, total)) %>%
+spread(key=area , value=freq, fill=0) %>%
+select_if(is.numeric) %>%
+rowwise %>%
+mutate(total=sum(.))
+Bonn.HR.tab
+formattable(Bonn.HR.tab)
+Bonn.HR.tab<- Bonn.HR %>%
+ungroup() %>%
+select(-c(OHR.label, total)) %>%
+spread(key=area , value=freq, fill=0) %>%
+select_if(is.numeric)
+Bonn.HR.tab
+Bonn.HR.tab<- Bonn.HR %>%
+ungroup() %>%
+select(-c(OHR.label, total)) %>%
+spread(key=area , value=freq, fill=0) %>%
+select_if(is.numeric) %>%
+rowsum()
+Bonn.HR.tab<- Bonn.HR %>%
+ungroup() %>%
+select(-c(OHR.label, total)) %>%
+spread(key=area , value=freq, fill=0) %>%
+select_if(is.numeric) %>%
+mutate(total=rowsum())
+Bonn.HR.tab<- Bonn.HR %>%
+ungroup() %>%
+select(-c(OHR.label, total)) %>%
+spread(key=area , value=freq, fill=0) %>%
+select_if(is.numeric) %>%
+mutate(total=rowsum(.))
+Bonn.HR.tab<- Bonn.HR %>%
+ungroup() %>%
+select(-c(OHR.label, total)) %>%
+spread(key=area , value=freq, fill=0) %>%
+select_if(is.numeric) %>%
+mutate(total=pmax(.))
+Bonn.HR.tab<- Bonn.HR %>%
+ungroup() %>%
+select(-c(OHR.label, total)) %>%
+spread(key=area , value=freq, fill=0) %>%
+select_if(is.numeric) %>%
+map(total=pmax(.))
+Bonn.HR.tab<- Bonn.HR %>%
+ungroup() %>%
+select(-c(OHR.label, total)) %>%
+spread(key=area , value=freq, fill=0) %>%
+select_if(is.numeric) %>%
+map(~pmax(.))
+Bonn.HR.tab
+Bonn.HR.tab<- Bonn.HR %>%
+ungroup() %>%
+select(-c(OHR.label, total)) %>%
+spread(key=area , value=freq, fill=0) %>%
+select_if(is.numeric) %>%
+map(~pmax())
+Bonn.HR.tab<- Bonn.HR %>%
+ungroup() %>%
+select(-c(OHR.label, total)) %>%
+spread(key=area , value=freq, fill=0) %>%
+select_if(is.numeric) %>%
+muatate_at(tota=any.vars(is.numeric), funs(sum(.)))
+Bonn.HR.tab<- Bonn.HR %>%
+ungroup() %>%
+select(-c(OHR.label, total)) %>%
+spread(key=area , value=freq, fill=0) %>%
+select_if(is.numeric) %>%
+mutate_at(tota=any.vars(is.numeric), funs(sum(.)))
+Bonn.HR.tab<- Bonn.HR %>%
+ungroup() %>%
+select(-c(OHR.label, total)) %>%
+spread(key=area , value=freq, fill=0) %>%
+# select_if(is.numeric) %>%
+mutate_at(tota=any.vars(is.numeric(.)), funs(sum(.)))
+Bonn.HR.tab<- Bonn.HR %>%
+ungroup() %>%
+select(-c(OHR.label, total)) %>%
+spread(key=area , value=freq, fill=0) %>%
+select_if(is.numeric) %>%
+mutate(~sum(.))
+Bonn.HR.tab<- Bonn.HR %>%
+ungroup() %>%
+select(-c(OHR.label, total)) %>%
+spread(key=area , value=freq, fill=0) %>%
+select_if(is.numeric) %>%
+mutate(~sum())
+Bonn.HR.tab<- Bonn.HR %>%
+ungroup() %>%
+select(-c(OHR.label, total)) %>%
+spread(key=area , value=freq, fill=0) %>%
+select_if(is.numeric) %>%
+map(~sum)
+Bonn.HR.tab
+Bonn.HR.tab<- Bonn.HR %>%
+ungroup() %>%
+select(-c(OHR.label, total)) %>%
+spread(key=area , value=freq, fill=0) %>%
+select_if(is.numeric) %>%
+map(~sum, na.rm=TRUE)
+Bonn.HR.tab
+Bonn.HR.tab<- Bonn.HR %>%
+ungroup() %>%
+select(-c(OHR.label, total)) %>%
+spread(key=area , value=freq, fill=0) %>%
+mutate(total=do.call(sum, select_if(.,is.numeric)))
+Bonn.HR.tab
+formattable(Bonn.HR.tab)
+Bonn.HR.tab<- Bonn.HR %>%
+ungroup() %>%
+select(-c(OHR.label, total)) %>%
+spread(key=area , value=freq, fill=0) %>%
+rowwise %>%
+mutate(total=do.call(sum, select_if(.,is.numeric)))
+formattable(Bonn.HR.tab)
+Bonn.HR.tab<- Bonn.HR %>%
+ungroup()
+Bonn.HR.tab %>%
+select(-c(OHR.label, total)) %>%
+spread(key=area , value=freq, fill=0) %>%
+rowwise %>%
+mutate(total=do.call(sum, select_if(.,is.numeric)))
+Bonn.HR.tab %>%
+select(-c(OHR.label, total)) %>%
+spread(key=area , value=freq, fill=0) %>%
+rowwise %>%
+mutate(total=do.call(sum, select_if(.,is.numeric))) -> Bonn.HR.tab
+Bonn.HR.tab
+library(formattable)
+Bonn.HR.tab %>%
+select(-c(OHR.label, total)) %>%
+spread(key=area , value=freq, fill=0) ->Bonn.HR.tab
+Bonn.HR.tab %>%
+select(-c(OHR.label, total)) %>%
+spread(key=area , value=freq, fill=0) ->Bonn.HR.tab
+Bonn.HR.tab %>%
+mutate(total=do.call(sum, select_if(.,is.numeric))) -> Bonn.HR.tab
+Bonn.HR.tab$total
+Bonn.HR.tab<- Bonn.HR %>%
+ungroup()
+Bonn.HR.tab %>%
+select(-c(OHR.label, total)) %>%
+spread(key=area , value=freq, fill=0) ->Bonn.HR.tab
+Bonn.HR.tab %>%
+mutate(total=do.call(sum, select_if(.,is.numeric))) -> Bonn.HR.tab
+Bonn.HR.tab$total
+Bonn.HR.tab %>%
+rowwise() %>%
+mutate(total=do.call(sum, select_if(.,is.numeric))) -> Bonn.HR.tab
+Bonn.HR.tab$total
+Bonn.HR.tab<- Bonn.HR %>%
+ungroup()
+Bonn.HR.tab %>%
+select(-c(OHR.label, total)) %>%
+spread(key=area , value=freq, fill=0) ->Bonn.HR.tab
+Bonn.HR.tab
+Bonn.HR.tab<- Bonn.HR %>%
+ungroup()
+Bonn.HR.tab %>%
+select(-c(OHR.label, total)) %>%
+spread(key=area , value=freq, fill=0, drop=FALSE) ->Bonn.HR.tab
+Bonn.HR.tab
+Bonn.HR.tab %>%
+select(-c(OHR.label, total)) %>%
+spread(key=area , value=freq, fill=0) ->Bonn.HR.tab
+Bonn.HR.tab
+Bonn.HR
+Bonn.HR.tab %>%
+select(-c(OHR.label, total)) %>%
+spread(key=area , value=freq, fill=0, HR, period) ->Bonn.HR.tab
+Bonn.HR.tab<- Bonn.HR %>%
+ungroup()
+Bonn.HR.tab %>%
+select(-c(OHR.label, total)) %>%
+spread(key=area , value=freq, fill=0, HR, period) ->Bonn.HR.tab
+Bonn.HR.tab %>%
+select(-c(OHR.label, total)) %>%
+spread(key=area , value=freq, fill=0, -c(HR, period)) ->Bonn.HR.tab
+Bonn.HR.tab<- Bonn.HR %>%
+ungroup()
+Bonn.HR.tab
+Bonn.HR.tab %>%
+select(-c(OHR.label)) %>%
+spread(key=area , value=freq,
+fill=0) ->Bonn.HR.tab
+Bonn.HR.tab
+formattable(Bonn.HR.tab)
+Bonn.HR.tab %>%
+select(-c(OHR.label)) %>%
+spread(key=area , value=freq,
+fill=0) %>%
+select(everything(),total)
+Bonn.HR.tab %>%
+select(-c(OHR.label)) %>%
+spread(key=area , value=freq,
+fill=0) %>%
+select(everything(),total)
+Bonn.HR.tab
+Bonn.HR.tab <- Bonn.HR.tab[1,3,4:12,2]
+Bonn.HR.tab <- Bonn.HR.tab[,c(1,3,4:12, 2)]
+Bonn.HR.tab
+formattable(Bonn.HR.tab)
+allign.columns<- c(rep("l",2),rep("c",11))
+formattable(Bonn.HR.tab,align=allign.columns)
+formattable(Bonn.HR.tab,
+align=allign.columns,
+list(total=color_bar("lightblue")))
+`Removals and Suspensions from Office`=color_bar("red"))
+"Removals and Suspensions from Office"=color_bar("red"))
+formattable(Bonn.HR.tab,
+align=allign.columns,
+list(total=color_bar("lightblue"),
+"Removals and Suspensions from Office"=color_bar("red")))
+allign.columns<- c(rep("l",2),rep("r",11))
+formattable(Bonn.HR.tab,
+align=allign.columns,
+list(total=color_bar("lightblue"),
+"Removals and Suspensions from Office"=color_bar("red")))
+formattable(Bonn.HR.tab,
+align=allign.columns,
+list(total=color_bar("lightblue"),
+"Removals and Suspensions from Office"=color_bar("red"),
+"State Symbols, State-Level Matters and Const. Issues"=color_bar("grey")))
+formattable(Bonn.HR.tab,
+align=allign.columns,
+list(total=color_bar("lightblue"),
+"Removals and Suspensions from Office"=color_bar("red"),
+"State Symbols, State-Level Matters and Const. Issues"=color_bar("grey"),
+"Judicial Reform"=color_bar("green")))
+total = formatter('span', style=style(font.weight = "bold")))
+total = formatter('span', style=style(font.weight = "bold"))
+formattable(Bonn.HR.tab,
+formattable(Bonn.HR.tab,
+formattable(Bonn.HR.tab,
+formattable(Bonn.HR.tab,
+formattable(Bonn.HR.tab,
+formattable(Bonn.HR.tab,
+formattable(Bonn.HR.tab, align=allign.columns,
+list(total=color_bar("lightblue"),
+"Removals and Suspensions from Office"=color_bar("red"),
+"State Symbols, State-Level Matters and Const. Issues"=color_bar("grey"),
+"Judicial Reform"=color_bar("green")))
+formattable(Bonn.HR.tab, align=allign.columns,
+list(total=color_bar("lightblue"),
+"Removals and Suspensions from Office"=color_bar("red"),
+"State Symbols, State-Level Matters and Const. Issues"=color_bar("grey"),
+"Judicial Reform"=color_bar("green")))
+formattable(Bonn.HR.tab, align=allign.columns,
+list(total=color_bar("lightblue"),
+"Removals and Suspensions from Office"=color_bar("red"),
+"State Symbols, State-Level Matters and Const. Issues"=color_bar("grey"),
+"Judicial Reform"=color_bar("green"),
+total=	formatter('span', style=style(font.weight = "bold"))))
+formattable(Bonn.HR.tab, align=allign.columns,
+list(total=color_bar("lightblue"),
+"Removals and Suspensions from Office"=color_bar("red"),
+"State Symbols, State-Level Matters and Const. Issues"=color_bar("grey"),
+"Judicial Reform"=color_bar("green"),
+HR =	formatter('span', style=style(font.weight = "bold"))))
+formattable(Bonn.HR.tab, align=allign.columns,
+list(total=color_bar("lightblue"),
+"Removals and Suspensions from Office"=color_bar("red"),
+"State Symbols, State-Level Matters and Const. Issues"=color_bar("grey"),
+"Judicial Reform"=color_bar("green"),
+"Federation, Mostar and H-N Canton"=color_bar("green"),
+HR =	formatter('span', style=style(font.weight = "bold"))))
+tab1<- formattable(Bonn.HR.tab, align=allign.columns,
+list(total=color_bar("lightblue"),
+"Removals and Suspensions from Office"=color_bar("red"),
+"State Symbols, State-Level Matters and Const. Issues"=color_bar("grey"),
+"Judicial Reform"=color_bar("green"),
+"Federation, Mostar and H-N Canton"=color_bar("green"),
+HR =	formatter('span', style=style(font.weight = "bold"))))
+export_formattable(tab1,"tab1.png")
+library(htmltools)
+library(webshot)
+export_formattable(tab1,"tab1.png")
+write(tab1)
+formattable::write(tab1)
+tab1<- formattable(Bonn.HR.tab, align=allign.columns,
+# list(total=color_bar("lightblue"),
+#      "Removals and Suspensions from Office"=color_bar("red"),
+#      "State Symbols, State-Level Matters and Const. Issues"=color_bar("grey"),
+#      "Judicial Reform"=color_bar("green"),
+#      "Federation, Mostar and H-N Canton"=color_bar("green"),
+#      HR =	formatter('span', style=style(font.weight = "bold")))
+list(area(row=1 ~ color_bar("red")))
+)
+tab1
+tab1<- formattable(Bonn.HR.tab, align=allign.columns,
+# list(total=color_bar("lightblue"),
+#      "Removals and Suspensions from Office"=color_bar("red"),
+#      "State Symbols, State-Level Matters and Const. Issues"=color_bar("grey"),
+#      "Judicial Reform"=color_bar("green"),
+#      "Federation, Mostar and H-N Canton"=color_bar("green"),
+#      HR =	formatter('span', style=style(font.weight = "bold")))
+list(area(row=1 ~ normalize_bar("red")))
+)
+tab1
+tab1<- formattable(Bonn.HR.tab, align=allign.columns,
+# list(total=color_bar("lightblue"),
+#      "Removals and Suspensions from Office"=color_bar("red"),
+#      "State Symbols, State-Level Matters and Const. Issues"=color_bar("grey"),
+#      "Judicial Reform"=color_bar("green"),
+#      "Federation, Mostar and H-N Canton"=color_bar("green"),
+#      HR =	formatter('span', style=style(font.weight = "bold")))
+list(area(col=1 ~ normalize_bar("red")))
+)
+tab1
+tab1<- formattable(Bonn.HR.tab, align=allign.columns,
+# list(total=color_bar("lightblue"),
+#      "Removals and Suspensions from Office"=color_bar("red"),
+#      "State Symbols, State-Level Matters and Const. Issues"=color_bar("grey"),
+#      "Judicial Reform"=color_bar("green"),
+#      "Federation, Mostar and H-N Canton"=color_bar("green"),
+#      HR =	formatter('span', style=style(font.weight = "bold")))
+list(area(col=c(1) ~ normalize_bar("red")))
+)
+tab1
+tab1<- formattable(Bonn.HR.tab, align=allign.columns,
+# list(total=color_bar("lightblue"),
+#      "Removals and Suspensions from Office"=color_bar("red"),
+#      "State Symbols, State-Level Matters and Const. Issues"=color_bar("grey"),
+#      "Judicial Reform"=color_bar("green"),
+#      "Federation, Mostar and H-N Canton"=color_bar("green"),
+#      HR =	formatter('span', style=style(font.weight = "bold")))
+list(area(col=2:11, row=1) ~ normalize_bar("red")))
+tab1
+tab1<- formattable(Bonn.HR.tab, align=allign.columns,
+# list(total=color_bar("lightblue"),
+#      "Removals and Suspensions from Office"=color_bar("red"),
+#      "State Symbols, State-Level Matters and Const. Issues"=color_bar("grey"),
+#      "Judicial Reform"=color_bar("green"),
+#      "Federation, Mostar and H-N Canton"=color_bar("green"),
+#      HR =	formatter('span', style=style(font.weight = "bold")))
+list(area(col=3:11, row=1) ~ normalize_bar("red")))
+tab1
+tab1<- formattable(Bonn.HR.tab, align=allign.columns,
+# list(total=color_bar("lightblue"),
+#      "Removals and Suspensions from Office"=color_bar("red"),
+#      "State Symbols, State-Level Matters and Const. Issues"=color_bar("grey"),
+#      "Judicial Reform"=color_bar("green"),
+#      "Federation, Mostar and H-N Canton"=color_bar("green"),
+#      HR =	formatter('span', style=style(font.weight = "bold")))
+list(area(col=3:11, row=1) ~ normalize_bar("lightblue")))
+tab1
+Bonn.HR.tab %>%
+select(-c(OHR.label)) %>%
+spread(key=HR , value=freq,
+fill=0)
+Bonn.HR.tab<- Bonn.HR %>%
+ungroup()
+Bonn.HR.tab %>%
+select(-c(OHR.label)) %>%
+spread(key=HR , value=freq,
+fill=0)
+Bonn.HR.tab<- Bonn.HR %>%
+ungroup()
+Bonn.HR.tab %>%
+select(-c(HR)) %>%
+spread(key=OHR.label , value=freq,
+fill=0)
+Bonn.HR.tab %>%
+select(-c(HR, period)) %>%
+spread(key=OHR.label , value=freq,
+fill=0)
+Bonn.HR.tab<- Bonn.HR %>%
+ungroup()
+Bonn.HR.tab %>%
+select(-c(HR, period)) %>%
+spread(key=OHR.label , value=freq,
+fill=0)
+Bonn.HR.tab<- Bonn.HR %>%
+ungroup()
+Bonn.HR.tab %>%
+select(-c(HR, period, total)) %>%
+spread(key=OHR.label , value=freq,
+fill=0)
+Bonn.HR.tab %>%
+select(-c(HR, period, total)) %>%
+spread(key=OHR.label , value=freq,
+fill=0) -> Bonn.HR.tab
+Bonn.HR.tab
+Bonn.HR.tab<- Bonn.HR %>%
+ungroup()
+Bonn.HR.tab %>%
+mutate(OHR.label=fct_reorder(OHR,label,HR)) %>%
+select(-c(HR, period, total)) %>%
+spread(key=OHR.label , value=freq,
+fill=0) -> Bonn.HR.tab
+Bonn.HR.tab %>%
+mutate(OHR.label=fct_reorder(OHR.label,HR))
+levels(Bonn.HR$HR)
+as.numeric(levels(Bonn.HR$HR))
+questionr:::iorder()
+## Reordering Bonn.HR$OHR.label
+Bonn.HR$OHR.label <- factor(Bonn.HR$OHR.label, levels=c("Westendorp\n97/06-99/08", "Petritsch\n99/08-02/05", "Ashdown\n02/05-06/01", "Schwarz-Schilling\n06/02-07/06", "Lajcak\n07/07-09/02", "Inzko\n09/03-14/12"))
+Bonn.HR.tab<- Bonn.HR %>%
+ungroup()
+Bonn.HR.tab %>%
+select(-c(HR, period, total)) %>%
+spread(key=OHR.label , value=freq,
+fill=0) -> Bonn.HR.tab
+Bonn.HR.tab
+Bonn.HR.tab %>%
+select(-c(HR, period, total)) %>%
+spread(key=OHR.label , value=freq,
+fill=0) -> Bonn.HR.tab
+tab1<- formattable(Bonn.HR.tab, align=allign.columns,
+# list(total=color_bar("lightblue"),
+#      "Removals and Suspensions from Office"=color_bar("red"),
+#      "State Symbols, State-Level Matters and Const. Issues"=color_bar("grey"),
+#      "Judicial Reform"=color_bar("green"),
+#      "Federation, Mostar and H-N Canton"=color_bar("green"),
+#      HR =	formatter('span', style=style(font.weight = "bold")))
+list(area(col=3:11, row=1) ~ normalize_bar("lightblue")))
+tab1
+Bonn.HR.tab
+tab1<- formattable(Bonn.HR.tab, align=allign.columns,
+# list(total=color_bar("lightblue"),
+#      "Removals and Suspensions from Office"=color_bar("red"),
+#      "State Symbols, State-Level Matters and Const. Issues"=color_bar("grey"),
+#      "Judicial Reform"=color_bar("green"),
+#      "Federation, Mostar and H-N Canton"=color_bar("green"),
+#      HR =	formatter('span', style=style(font.weight = "bold")))
+list(area(col=2:6, row=1) ~ normalize_bar("lightblue")))
+tab1
+allign.columns<- c(rep("l",1),rep("r",11))
+tab1<- formattable(Bonn.HR.tab, align=allign.columns,
+# list(total=color_bar("lightblue"),
+#      "Removals and Suspensions from Office"=color_bar("red"),
+#      "State Symbols, State-Level Matters and Const. Issues"=color_bar("grey"),
+#      "Judicial Reform"=color_bar("green"),
+#      "Federation, Mostar and H-N Canton"=color_bar("green"),
+#      HR =	formatter('span', style=style(font.weight = "bold")))
+list(area(col=2:6, row=1) ~ normalize_bar("lightblue")))
+tab1

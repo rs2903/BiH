@@ -1,0 +1,22 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1557232073501.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "3827481659",
+    "id" : "435F9643",
+    "lastKnownWriteTime" : 1557233460,
+    "last_content_update" : -2147483648,
+    "path" : "~/ro - ceu/R/Bosnia/Bonn Powers/script/ScrappingBonnPowerDecisions.R",
+    "project_path" : "script/ScrappingBonnPowerDecisions.R",
+    "properties" : {
+        "cursorPosition" : "17,0",
+        "scrollLine" : "10"
+    },
+    "relative_order" : 3,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}

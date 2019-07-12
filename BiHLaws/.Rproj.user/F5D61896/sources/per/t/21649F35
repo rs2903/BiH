@@ -1,0 +1,24 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1557128522799.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "11|29|31|59|\n84|30|96|0|\n",
+    "hash" : "927664498",
+    "id" : "21649F35",
+    "lastKnownWriteTime" : 1557146069,
+    "last_content_update" : -2147483648,
+    "path" : "~/ro - ceu/R/Bosnia/BiHLaws/script/passed_laws_per_gov.R",
+    "project_path" : "script/passed_laws_per_gov.R",
+    "properties" : {
+        "cursorPosition" : "154,35",
+        "docOutlineSize" : "223.64862207860045",
+        "docOutlineVisible" : "1",
+        "scrollLine" : "151"
+    },
+    "relative_order" : 1,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}

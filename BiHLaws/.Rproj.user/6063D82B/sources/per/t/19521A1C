@@ -1,0 +1,23 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1553675450351.000,
+    "dirty" : false,
+    "encoding" : "WINDOWS-1252",
+    "folds" : "",
+    "hash" : "127236473",
+    "id" : "19521A1C",
+    "lastKnownWriteTime" : 1553702999,
+    "last_content_update" : -2147483648,
+    "path" : "~/ro - ceu/R/Bosnia/BiHLaws/script/2018_laws.R",
+    "project_path" : "script/2018_laws.R",
+    "properties" : {
+        "cursorPosition" : "341,0",
+        "docOutlineVisible" : "1",
+        "scrollLine" : "314"
+    },
+    "relative_order" : 1,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}

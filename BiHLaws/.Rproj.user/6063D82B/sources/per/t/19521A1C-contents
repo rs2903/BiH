@@ -1,0 +1,344 @@
+# setup -------------------------------------------------------------------
+library(rvest)
+library(tidyverse)
+library(glue)
+
+wdr <- getwd() 
+
+# scrap links for all laws ------------------------------------------------
+
+
+
+seq.page<- seq(1:16)
+seq.links <- glue("http://parlament.ba/oLaw/GetOLawsByStatus?page={seq.page}&MandateId=4&Status=-1") %>% 
+  enframe(name=NULL)
+
+
+pb <- progress_estimated(nrow(seq.links))
+
+
+fn_scrap <- function(x){
+
+  pb$tick()$print()
+  
+  x %>% 
+  read_html() %>% 
+  html_nodes("a") %>% 
+  html_attr(.,"href") %>% 
+  enframe(name=NULL) %>% 
+  filter(str_detect(value, "OLawDetails")) %>% 
+  mutate(links=paste0("http://parlament.ba",value)) 
+  
+  }
+
+df.links <- seq.links$value %>% 
+  set_names() %>% 
+  map_dfr(.,  possibly(fn_scrap, otherwise=NULL), .id="seq.links")
+
+
+#write.csv2(df.links, paste0(wdr, "/data/2014_2018_law_links.csv"))
+
+
+
+# scrap law details based on link list ------------------------------------
+
+df.contents <- df.links$links[1] %>% 
+  read_html() %>% 
+  html_nodes("td") %>% 
+  html_text(.,trim=T) %>% 
+  enframe(name=NULL) %>% 
+  slice(c(1:13))
+
+df.names<- df.links$links[1] %>% 
+  read_html() %>% 
+  html_nodes("th") %>% 
+  html_text(.,trim=T) %>% 
+  enframe(name=NULL) %>% 
+  slice(c(1:13))
+
+bind_cols(df.names, df.contents) %>% 
+  mutate(chamber=case_when(row_number()>7 ~ "DP",
+                           TRUE ~ "PS"))
+
+
+pb <- dplyr::progress_estimated(nrow(df.links))
+
+fn_scrap_details(df.links$links[1])
+
+fn_scrap_details <- function(x) { 
+
+  pb$tick()$print()
+  
+df.contents <- x %>% 
+  read_html() %>% 
+  html_nodes("td") %>% 
+  html_text(.,trim=T) %>% 
+  enframe(name=NULL) %>% 
+  slice(c(1:13))
+
+df.names<- x %>% 
+  read_html() %>% 
+  html_nodes("th") %>% 
+  html_text(.,trim=T) %>% 
+  enframe(name=NULL) %>% 
+  slice(c(1:13))
+
+bind_cols(df.names, df.contents) %>% 
+  mutate(chamber=case_when(row_number()>7 ~ "DP",
+                           TRUE ~ "PS"))
+
+}
+
+df.details.all<- df.links$links %>% 
+  set_names() %>% 
+  map_dfr(.,  possibly(fn_scrap_details, otherwise=NULL), .id="seq.links")
+
+#write_csv2(df.details.all, paste0(wdr,"/data/2014_2018_laws.csv"))
+
+
+df.details.all.wide <- df.details.all %>% 
+  spread(key=value, value=value1, seq.links, chamber)
+
+
+df.details.all <- readr::read_csv2(paste0(wdr, "/data/2014_2018_laws.csv"))
+
+# law timeline ------------------------------------------------------------
+
+df.links <- readr::read_csv2(paste0(wdr,"/data/2014_2018_law_links.csv"))
+
+pb <- dplyr::progress_estimated(nrow(df.links))
+
+
+fn_case.details <- function(x)  {
+  
+    pb$tick()$print()
+  
+    x %>% 
+    read_html() %>% 
+    html_nodes("table") %>% 
+    html_table(., trim=T, fill=T) %>% 
+    
+    map(., ~map(., as_tibble)) %>% 
+    map(., bind_cols) %>% 
+    bind_rows()
+      
+  }
+
+df.details.all<- df.links$links %>% 
+  set_names() %>% 
+  map_dfr(.,  possibly(fn_case.details, otherwise=NULL), .id="seq.links")
+
+#write_csv2(df.details.all, paste0(wdr,"/data/2014_2018_law_details.csv"))
+
+
+
+
+# get links to pdfs -------------------------------------------------------
+
+# > single case testing ---------------------------------------------------
+
+
+
+#df.details.all <- readr::read_csv2(paste0(wdr,"/data/2014_2018_law_details.csv"))
+
+df.links <- readr::read_csv2(paste0(wdr,"/data/2014_2018_law_links.csv"))
+
+df.pdfs <- df.links$links[12] %>% 
+    read_html() %>% 
+    #html_nodes("li") %>% 
+    html_nodes(xpath="//a[contains(text(), 'Listing')]") %>%  #filters links based on text/name of links
+    html_attr('href') %>%  #extracts links
+    enframe(name=NULL) %>% 
+    mutate(link=paste0("http://parlament.ba", value))
+
+library(tabulizer)
+u<- df.pdfs$link[1] %>%
+  tabulizer::extract_tables() %>% 
+  map(., as_tibble) %>% 
+  map(., janitor::row_to_names, row_number=2) %>% 
+  map(., janitor::clean_names) %>% 
+  keep(., map(., nrow) > 0) %>% 
+  map_dfr(., bind_rows, .id="law")
+
+pdf.u <- df.pdfs$link[1] %>% 
+  pdftools::pdf_text()
+
+pdf.x <- df.pdfs$link[1] %>% 
+  tabulizer::extract_tables(method=c("stream")) %>% 
+  map(.,as_tibble) %>% 
+  keep(., map(., nrow)> 20)
+
+
+
+# > functions -------------------------------------------------------------
+
+
+
+fn_scrap_listing <- function(x) {
+  
+  pb$tick()$print()
+  
+  x %>% 
+    read_html() %>% 
+    #html_nodes("li") %>% 
+    html_nodes(xpath="//a[contains(text(), 'Listing')]") %>%  #filters links based on text/name of links
+    html_attr('href') %>%  #extracts links
+    enframe(name=NULL) %>% 
+    mutate(link=paste0("http://parlament.ba", value))
+  
+}
+
+pb <- dplyr::progress_estimated(nrow(df.links))
+
+
+df.voting.results.links <- df.links$links %>% 
+  set_names() %>% 
+  map_dfr(.,  possibly(fn_scrap_listing, otherwise=NULL), .id="seq.links")
+
+#write_csv2(df.voting.results.links, path=paste0(wdr, "/data/2014_2018_voting_res_links.csv"))
+
+df.voting.results.links <- readr::read_csv2(paste0(wdr, "/data/2014_2018_voting_res_links.csv"))
+
+df.voting.results.links <- df.voting.results.links %>% 
+  mutate(law_id=str_extract(link, "[0-9]{6}&") %>% parse_number()) 
+  
+pdf_dest <- glue("{wdr}/data/voting_records/{df.voting.results.links$law_id}.pdf")
+
+#walk2(df.voting.results.links$link, pdf_dest, download.file, mode = "wb") #downloads files
+
+
+fn_extract_votes <- function(x) {
+  
+  pb$tick()$print()
+  
+  x  %>%
+    tabulizer::extract_tables(method=c("stream")) %>%
+    map(.,as_tibble) %>%
+    keep(., map(., nrow)> 10) %>% 
+    map(., ~mutate(.,link=x))
+}
+
+pb <- dplyr::progress_estimated(length(pdf_dest))
+
+#scap download files
+df.voting.results <- list.files(path=paste0(wdr,"/data/voting_records/"), 
+                                pattern=".pdf$",
+                                all.files=T,full.names = T)[c(1:3)] %>% 
+  set_names() %>% 
+  map(.,  possibly(fn_extract_votes, otherwise=NULL))
+
+  
+#scarp on the fly from web  
+pb <- dplyr::progress_estimated(nrow(df.voting.results.links))
+
+#on the fly works
+df.voting.results <- df.voting.results.links$link[1:2] %>% 
+  set_names() %>% 
+#  map(.,  possibly(fn_extract_votes, otherwise=NULL), .id="seq.links") %>% 
+  map(.,  possibly(fn_extract_votes, otherwise=NULL))
+
+#write_csv2(df.voting.results, path=paste0(wdr,"/data/voting_results.csv"))
+df.voting.results[1:4]
+
+x <- df.voting.results.links$link[1:2] %>% 
+  map(., fn_extract_votes)
+df.x <- x[1[[1]]] %>% 
+  map_dfr(.,bind_rows)
+
+test <- df.voting.results[["http://parlament.ba/oLaw/GetOwisDocument/?documentId=177454&data=40A2D2573FA695DE4BEFA7D1254CFE0A&lang=bs"]]
+test[1][1]
+
+
+
+# pdftools ----------------------------------------------------------------
+
+
+file.list  <- list.files(path=paste0(wdr,"/data/voting_records/"), 
+                         pattern=".pdf$",
+                         all.files=T,full.names = T) 
+
+raw_text <- file.list [c(1:5)] %>% 
+  map(., pdftools::pdf_text) %>% 
+  map(., stringr::str_split, "\n", simplify=T) %>% 
+  map(., stringr::str_subset, "Delegate") %>%
+  map(., stringr::str_squish) %>% 
+  map_dfr(., enframe, name=NULL) %>% 
+  mutate(value1=str_extract_all(value, "[[:alpha:]-]+")) %>%   
+  mutate(value1=map(value1, paste, collapse=" ") %>% flatten_chr()) 
+  
+df.x <- raw_text %>% 
+  mutate(delegate_name=word(value1, 1, 2)) %>% 
+  mutate(entity=word(value1, -2)) %>% 
+  mutate(entity=str_extract(value1, " RS | FBiH ") %>% str_trim(., side=c("both"))) %>% 
+  mutate(entity.pos=str_locate_all(value1, "RS|FBiH")) %>% 
+  mutate(entity.pos.end=map(entity.pos, pluck, 2) %>% flatten_int) %>% 
+  mutate(vote=str_sub(value1, entity.pos.end+1, end=-1L) %>% str_trim(., side=c("both"))) 
+
+
+df.x
+
+pb <- dplyr::progress_estimated(length(file.list))
+
+  
+fn_pdftools <- function(file)  {
+  
+  pb$tick()$print()
+  
+ file %>% 
+    map(., pdftools::pdf_text) %>% 
+    map(., stringr::str_split, "\n", simplify=T) %>% 
+    map(., stringr::str_subset, "Delegate") %>%                 #extracts rows which contain Delegate
+    map(., stringr::str_squish) %>% 
+    map_dfr(., enframe, name=NULL) %>% 
+    mutate(value1=str_extract_all(value, "[[:alpha:]-]+")) %>%   #removes numbers => results in list
+    mutate(value1=map(value1, paste, collapse=" ") %>% flatten_chr())  %>% #makes character vector out of list
+    mutate(delegate_name=word(value1, 1, 2)) %>% 
+    mutate(entity=word(value1, -2)) %>% 
+    mutate(entity=str_extract(value1, "RS | FBiH ") %>% str_trim(., side=c("both"))) %>% 
+    mutate(entity.pos=str_locate_all(value1, "RS|FBiH")) %>%    #calculates position of RS or FBiHH
+    mutate(entity.pos.end=map(entity.pos, pluck, 2) %>% flatten_int) %>%        #extracts end of location position
+    mutate(vote=str_sub(value1, entity.pos.end+1, end=-1L) %>% str_trim(., side=c("both")))       #end of location position is start for extraction subsequent words
+  
+}
+
+df.all <- file.list %>% 
+  set_names() %>% 
+  map_dfr(., possibly(fn_pdftools, otherwise=NULL), .id="law_id")
+
+df.sum <- df.all %>% 
+  mutate_at(vars(law_id, entity, vote), as.factor) %>% 
+  group_by(law_id, entity, vote, .drop = F) %>% 
+  summarise(votes=n()) %>% 
+  group_by(law_id, entity, .drop=F) %>% 
+  mutate(votes.casted=sum(votes[vote=="PROTIV"|vote=="ZA"])) %>% 
+  mutate(votes.rel=votes/votes.casted) %>% 
+  mutate(entity.voting=case_when(votes>9 & vote=="PROTIV" ~ "entity veto",
+                                 votes>18 & vote=="PROTIV" ~ "entity veto",
+                                 TRUE ~ as.character("no entity veto"))) %>% 
+  mutate(entity.voting2=case_when(votes.rel>0.66 & vote=="PROTIV" ~ "entity veto",
+                                  votes.rel>0.66 & vote=="PROTIV" ~ "entity veto",
+                                 TRUE ~ as.character("no entity veto")))
+  
+  
+df.x <- df.sum %>% 
+  filter(vote=="PROTIV") %>% 
+  arrange(law_id, entity) %>% 
+  select(law_id, entity, entity.voting2) %>% 
+  spread(key=entity, value=entity.voting2) %>% 
+  mutate(entity.voting=case_when(FBiH=="entity veto"  & RS=="entity veto" ~ "both veto",
+                                 FBiH!="entity veto" & RS=="entity veto" ~ "RS veto",
+                                 FBiH=="entity veto" & RS!="entity veto" ~ "FBiH veto",
+                                 TRUE ~ as.character("no veto")))
+
+
+df.x %>% 
+  ggplot()+
+  geom_bar(aes(x=entity.voting),
+           stat="count",
+           position=position_dodge())+
+  hrbrthemes::theme_ipsum_tw() +
+  theme(text=element_text(family="Arial"))+
+  scale_y_continuous(expand=expand_scale(add=c(0.4 ,0.02)))
+  
+
+
